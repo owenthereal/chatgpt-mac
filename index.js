@@ -1,7 +1,6 @@
 require("update-electron-app")();
 
 const { menubar } = require("menubar");
-const Nucleus = require("nucleus-analytics");
 
 const path = require("path");
 const {
@@ -19,8 +18,6 @@ const image = nativeImage.createFromPath(
 );
 
 app.on("ready", () => {
-  Nucleus.init("638d9ccf4a5ed2dae43ce122");
-
   const tray = new Tray(image);
 
   const mb = menubar({
@@ -70,7 +67,7 @@ app.on("ready", () => {
       {
         label: "Open in browser",
         click: () => {
-          shell.openExternal("https://chat.openai.com/chat");
+          shell.openExternal("https://chat.openai.com/chat?model=gpt-4");
         },
       },
       {
@@ -79,13 +76,13 @@ app.on("ready", () => {
       {
         label: "View on GitHub",
         click: () => {
-          shell.openExternal("https://github.com/vincelwt/chatgpt-mac");
+          shell.openExternal("https://github.com/owenthereal/chatgpt-mac");
         },
       },
       {
         label: "Author on Twitter",
         click: () => {
-          shell.openExternal("https://twitter.com/vincelwt");
+          shell.openExternal("https://twitter.com/owenthereal");
         },
       },
     ];
@@ -134,11 +131,20 @@ app.on("ready", () => {
         window: contents,
       });
 
+      contents.on("focus", (event, input) => {
+        contents.executeJavaScript(`document.querySelector('main form textarea').focus()`);
+      });
+
       // we can't set the native app menu with "menubar" so need to manually register these events
       // register cmd+c/cmd+v events
       contents.on("before-input-event", (event, input) => {
-        const { control, meta, key } = input;
+        const { control, meta, key, code } = input;
+
+        if (key === "Escape") mb.app.hide();
+
         if (!control && !meta) return;
+        if (control && key === "Enter") contents.executeJavaScript(`document.querySelector('main form button').click()`);
+        if (control && code === "Space") contents.executeJavaScript(`document.querySelector('main form textarea').focus()`);
         if (key === "c") contents.copy();
         if (key === "v") contents.paste();
         if (key === "a") contents.selectAll();
