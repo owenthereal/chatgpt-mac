@@ -8,19 +8,8 @@ module.exports = {
     extendInfo: {
       LSUIElement: "true",
     },
-    osxSign: {
-      hardenedRuntime: false,
-      gatekeeperAssess: false,
-      identity: "Developer ID Application: Owen Ou (Y5A4KD8K3J)",
-    },
-    osxNotarize: {
-      appBundleId: "com.owenou.chatgptmac",
-
-      tool: "notarytool",
-      appleId: parsed.APPLE_ID,
-      appleIdPassword: parsed.APPLE_PASSWORD,
-      teamId: parsed.APPLE_TEAM_ID,
-    },
+    osxSign: false,
+    osxNotarize: false,
   },
   publishers: [
     {
